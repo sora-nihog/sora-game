@@ -2,145 +2,368 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sora's Star Catcher</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sora's Galaxy ⭐</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  padding: 20px;
+  padding: 18px 12px;
   text-align: center;
-  font-family: Arial, sans-serif;
   color: white;
-  background: linear-gradient(135deg, #080b25, #30105c);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(160deg,#05071c,#20104c,#071d3b);
+  overflow-x: hidden;
 }
-h1 { color: #ffe66d; }
-#score, #timer { font-size: 22px; margin: 12px; }
-#game {
-  height: 400px;
-  max-width: 500px;
-  margin: 20px auto;
-  position: relative;
-  overflow: hidden;
+
+h1 {
+  color: #ffe66d;
+  text-shadow: 0 0 15px #ffc400;
+}
+
+input {
+  padding: 12px;
+  border-radius: 20px;
   border: 2px solid #a68bff;
-  border-radius: 18px;
-  background: radial-gradient(#192b65, #070b20);
-}
-.star {
-  position: absolute;
-  font-size: 35px;
-  cursor: pointer;
-  user-select: none;
-  animation: glow .7s infinite alternate;
-}
-@keyframes glow {
-  to { filter: drop-shadow(0 0 12px gold); }
-}
-button {
-  border: 0;
-  border-radius: 25px;
-  padding: 13px 22px;
-  margin: 6px;
-  background: #8d6bff;
+  width: 65%;
+  max-width: 260px;
+  background: #101735;
   color: white;
   font-size: 16px;
 }
+
+button {
+  border: 0;
+  border-radius: 25px;
+  padding: 12px 20px;
+  margin: 6px;
+  background: #8d6bff;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#scoreboard {
+  line-height: 1.8;
+  font-size: 18px;
+  margin: 14px;
+}
+
+#game {
+  height: 420px;
+  max-width: 520px;
+  width: 100%;
+  margin: 15px auto;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #a68bff;
+  border-radius: 20px;
+  background:
+    radial-gradient(ellipse at 25% 30%,#24336a 0%,transparent 40%),
+    radial-gradient(ellipse at 80% 70%,#35155c 0%,transparent 40%),
+    #050a20;
+  box-shadow: 0 0 25px #7149ff55;
+  touch-action: manipulation;
+}
+
+.sky-star {
+  position: absolute;
+  color: white;
+  opacity: .65;
+  pointer-events: none;
+  animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: .15; }
+  to { opacity: .9; }
+}
+
+.item {
+  position: absolute;
+  font-size: 34px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: appear .18s ease-out;
+}
+
+@keyframes appear {
+  from { transform: scale(.2) rotate(-25deg); }
+  to { transform: scale(1) rotate(0); }
+}
+
+#message {
+  min-height: 26px;
+  color: #ffe66d;
+}
+
+#highScore {
+  color: #9fffd3;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 15px;
+  background: #050a2088;
+}
+
+#overlay h2 { color: #ffe66d; }
+
+.small {
+  font-size: 13px;
+  color: #c9c9ef;
+}
+
 </style>
 </head>
 
 <body>
-<h1>⭐ Sora's Star Catcher 🌌</h1>
-<p>Tap the stars before they disappear!</p>
 
-<div id="score">Score: 0</div>
-<div id="timer">Time: 30s</div>
+<h1>🌌 Sora's Galaxy ⭐</h1>
+<p>Catch stars. Avoid bombs. Reach the next level!</p>
 
-<div id="game">
-  <p style="padding-top:150px">Ready? Press Start! ✨</p>
+<div id="nameArea">
+  <input id="playerName" maxlength="16"
+    placeholder="Enter your player name">
+  <button onclick="setName()">Save Name</button>
 </div>
 
-<button onclick="startGame()">▶ Start Game</button>
-<button onclick="resetGame()">↻ Reset</button>
-<p id="message">Catch as many stars as possible!</p>
+<div id="scoreboard">
+  <div>👤 Player: <span id="player">Guest</span></div>
+  <div>⭐ Score: <span id="score">0</span>
+    &nbsp; 🏆 Best: <span id="best">0</span></div>
+  <div>⏱️ Time: <span id="time">30</span>s
+    &nbsp; 🚀 Level: <span id="level">1</span></div>
+</div>
+
+<div id="game">
+  <div id="overlay">
+    <h2>⭐ Ready, Space Explorer?</h2>
+    <p>Tap ⭐ to score points.</p>
+    <p>💥 Bombs cost you points!</p>
+    <button onclick="startGame()">🚀 Start Game</button>
+  </div>
+</div>
+
+<button onclick="startGame()">🔄 Play Again</button>
+<button onclick="soundToggle()" id="soundButton">🔊 Sound ON</button>
+
+<p id="message">Your galaxy adventure awaits!</p>
+<p class="small">Stars +10 · Bombs −15 · Every 50 points = new level</p>
 
 <script>
 const game = document.getElementById("game");
+const $ = id => document.getElementById(id);
+
 let score = 0;
+let best = Number(localStorage.getItem("soraBest") || 0);
 let time = 30;
+let level = 1;
 let playing = false;
+let soundOn = true;
 let spawnTimer;
 let clockTimer;
+let playerName = localStorage.getItem("soraPlayer") || "Guest";
+let audioContext;
 
-function makeStar() {
+$("best").textContent = best;
+$("player").textContent = playerName;
+$("playerName").value = playerName === "Guest" ? "" : playerName;
+
+function setName() {
+  const value = $("playerName").value.trim();
+  playerName = value || "Guest";
+  localStorage.setItem("soraPlayer", playerName);
+  $("player").textContent = playerName;
+  $("message").textContent = "Welcome, " + playerName + "! 🌌";
+}
+
+function sound(frequency, duration = .12, type = "sine") {
+  if (!soundOn) return;
+
+  try {
+    audioContext = audioContext || new (window.AudioContext ||
+      window.webkitAudioContext)();
+
+    if (audioContext.state === "suspended") audioContext.resume();
+
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.value = frequency;
+    gain.gain.setValueAtTime(.12, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+      .001, audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + duration);
+  } catch (e) {}
+}
+
+function soundToggle() {
+  soundOn = !soundOn;
+  $("soundButton").textContent =
+    soundOn ? "🔊 Sound ON" : "🔇 Sound OFF";
+  if (soundOn) sound(600);
+}
+
+function makeSky() {
+  for (let i = 0; i < 48; i++) {
+    const dot = document.createElement("span");
+    dot.className = "sky-star";
+    dot.textContent = Math.random() > .5 ? "·" : "✦";
+    dot.style.left = Math.random() * 98 + "%";
+    dot.style.top = Math.random() * 98 + "%";
+    dot.style.fontSize = (8 + Math.random() * 12) + "px";
+    dot.style.animationDelay = Math.random() * 3 + "s";
+    game.appendChild(dot);
+  }
+}
+
+function updateLevel() {
+  level = Math.floor(score / 50) + 1;
+  $("level").textContent = level;
+}
+
+function spawnItem() {
   if (!playing) return;
 
-  const star = document.createElement("div");
-  star.className = "star";
-  star.textContent = "⭐";
+  const bomb = Math.random() < Math.min(.12 + level * .025, .32);
+  const item = document.createElement("button");
 
-  star.style.left =
-    Math.random() * (game.clientWidth - 45) + "px";
-  star.style.top =
-    Math.random() * (game.clientHeight - 45) + "px";
+  item.className = "item";
+  item.textContent = bomb ? "💥" : (Math.random() < .12 ? "🌟" : "⭐");
+  item.setAttribute("aria-label", bomb ? "Bomb" : "Star");
 
-  star.onclick = () => {
-    if (!playing) return;
-    score++;
-    document.getElementById("score").textContent =
-      "Score: " + score;
-    star.remove();
-    document.getElementById("message").textContent =
-      "Amazing! 🌟";
+  // Random position and random timing; no fixed pattern.
+  const maxX = Math.max(0, game.clientWidth - 48);
+  const maxY = Math.max(0, game.clientHeight - 48);
+
+  item.style.left = Math.random() * maxX + "px";
+  item.style.top = Math.random() * maxY + "px";
+  item.style.transform = "rotate(" + Math.random() * 60 + "deg)";
+
+  item.onclick = () => {
+    if (!playing || !item.isConnected) return;
+
+    if (bomb) {
+      score = Math.max(0, score - 15);
+      $("message").textContent = "BOOM! 💥 Watch out!";
+      sound(110, .25, "sawtooth");
+    } else {
+      const points = item.textContent === "🌟" ? 25 : 10;
+      score += points;
+      $("message").textContent = "+" + points + " points! ✨";
+      sound(item.textContent === "🌟" ? 1000 : 720);
+    }
+
+    item.remove();
+    $("score").textContent = score;
+
+    updateLevel();
+
+    if (score > best) {
+      best = score;
+      localStorage.setItem("soraBest", best);
+      $("best").textContent = best;
+    }
   };
 
-  game.appendChild(star);
+  game.appendChild(item);
 
-  setTimeout(() => star.remove(), 1500);
+  const lifetime = Math.max(550, 1500 - level * 80);
+  setTimeout(() => item.remove(), lifetime);
+}
+
+function clearItems() {
+  game.querySelectorAll(".item").forEach(item => item.remove());
 }
 
 function startGame() {
-  if (playing) return;
+  clearInterval(spawnTimer);
+  clearInterval(clockTimer);
+  playing = false;
+  clearItems();
 
-  resetGame();
+  score = 0;
+  time = 30;
+  level = 1;
+
+  $("score").textContent = score;
+  $("time").textContent = time;
+  $("level").textContent = level;
+  $("message").textContent = "Catch stars, dodge bombs! ⭐💥";
+
+  const overlay = $("overlay");
+  if (overlay) overlay.remove();
+
+  game.querySelectorAll(".sky-star").forEach(dot => dot.remove());
+  makeSky();
+
   playing = true;
-  game.innerHTML = "";
-  document.getElementById("message").textContent =
-    "Catch them quickly! ⭐";
+  spawnItem();
 
-  makeStar();
-  spawnTimer = setInterval(makeStar, 600);
+  function scheduleNext() {
+    if (!playing) return;
+    const delay = Math.max(230, 700 - level * 35) +
+      Math.random() * 550;
+
+    spawnTimer = setTimeout(() => {
+      spawnItem();
+      scheduleNext();
+    }, delay);
+  }
+
+  scheduleNext();
 
   clockTimer = setInterval(() => {
     time--;
-    document.getElementById("timer").textContent =
-      "Time: " + time + "s";
+    $("time").textContent = time;
 
-    if (time <= 0) {
-      playing = false;
-      clearInterval(spawnTimer);
-      clearInterval(clockTimer);
-      game.innerHTML =
-        "<h2 style='padding-top:100px'>🌟 Game Over!</h2>" +
-        "<h3>You collected " + score + " stars!</h3>";
-      document.getElementById("message").textContent =
-        "Great playing! 💜";
-    }
+    if (time <= 0) endGame();
   }, 1000);
 }
 
-function resetGame() {
+function endGame() {
   playing = false;
-  clearInterval(spawnTimer);
   clearInterval(clockTimer);
-  score = 0;
-  time = 30;
-  document.getElementById("score").textContent = "Score: 0";
-  document.getElementById("timer").textContent = "Time: 30s";
-  game.innerHTML =
-    "<p style='padding-top:150px'>Ready? Press Start! ✨</p>";
-  document.getElementById("message").textContent =
-    "Catch as many stars as possible!";
+  clearTimeout(spawnTimer);
+  clearItems();
+
+  sound(420, .25);
+  setTimeout(() => sound(320, .3), 250);
+
+  const overlay = document.createElement("div");
+  overlay.id = "overlay";
+  overlay.innerHTML =
+    "<h2>🌟 Game Over!</h2>" +
+    "<p>" + playerName + ", you scored " + score + " points!</p>" +
+    "<p>🏆 Best score: " + best + "</p>" +
+    "<button onclick='startGame()'>Play Again 🚀</button>";
+
+  game.appendChild(overlay);
+  $("message").textContent = "Great adventure! 💜";
 }
+
+makeSky();
 </script>
+
 </body>
 </html>
