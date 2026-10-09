@@ -1,13 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Search</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sora's Star Catcher</title>
+
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: linear-gradient(135deg, #080b25, #30105c);
+}
+h1 { color: #ffe66d; }
+#score, #timer { font-size: 22px; margin: 12px; }
+#game {
+  height: 400px;
+  max-width: 500px;
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #a68bff;
+  border-radius: 18px;
+  background: radial-gradient(#192b65, #070b20);
+}
+.star {
+  position: absolute;
+  font-size: 35px;
+  cursor: pointer;
+  user-select: none;
+  animation: glow .7s infinite alternate;
+}
+@keyframes glow {
+  to { filter: drop-shadow(0 0 12px gold); }
+}
+button {
+  border: 0;
+  border-radius: 25px;
+  padding: 13px 22px;
+  margin: 6px;
+  background: #8d6bff;
+  color: white;
+  font-size: 16px;
+}
+</style>
 </head>
 
 <body>
-    <h1>My Search 🔎</h1>
+<h1>⭐ Sora's Star Catcher 🌌</h1>
+<p>Tap the stars before they disappear!</p>
 
-    <input type="text" placeholder="Search...">
-    <button>Search</button>
+<div id="score">Score: 0</div>
+<div id="timer">Time: 30s</div>
+
+<div id="game">
+  <p style="padding-top:150px">Ready? Press Start! ✨</p>
+</div>
+
+<button onclick="startGame()">▶ Start Game</button>
+<button onclick="resetGame()">↻ Reset</button>
+<p id="message">Catch as many stars as possible!</p>
+
+<script>
+const game = document.getElementById("game");
+let score = 0;
+let time = 30;
+let playing = false;
+let spawnTimer;
+let clockTimer;
+
+function makeStar() {
+  if (!playing) return;
+
+  const star = document.createElement("div");
+  star.className = "star";
+  star.textContent = "⭐";
+
+  star.style.left =
+    Math.random() * (game.clientWidth - 45) + "px";
+  star.style.top =
+    Math.random() * (game.clientHeight - 45) + "px";
+
+  star.onclick = () => {
+    if (!playing) return;
+    score++;
+    document.getElementById("score").textContent =
+      "Score: " + score;
+    star.remove();
+    document.getElementById("message").textContent =
+      "Amazing! 🌟";
+  };
+
+  game.appendChild(star);
+
+  setTimeout(() => star.remove(), 1500);
+}
+
+function startGame() {
+  if (playing) return;
+
+  resetGame();
+  playing = true;
+  game.innerHTML = "";
+  document.getElementById("message").textContent =
+    "Catch them quickly! ⭐";
+
+  makeStar();
+  spawnTimer = setInterval(makeStar, 600);
+
+  clockTimer = setInterval(() => {
+    time--;
+    document.getElementById("timer").textContent =
+      "Time: " + time + "s";
+
+    if (time <= 0) {
+      playing = false;
+      clearInterval(spawnTimer);
+      clearInterval(clockTimer);
+      game.innerHTML =
+        "<h2 style='padding-top:100px'>🌟 Game Over!</h2>" +
+        "<h3>You collected " + score + " stars!</h3>";
+      document.getElementById("message").textContent =
+        "Great playing! 💜";
+    }
+  }, 1000);
+}
+
+function resetGame() {
+  playing = false;
+  clearInterval(spawnTimer);
+  clearInterval(clockTimer);
+  score = 0;
+  time = 30;
+  document.getElementById("score").textContent = "Score: 0";
+  document.getElementById("timer").textContent = "Time: 30s";
+  game.innerHTML =
+    "<p style='padding-top:150px'>Ready? Press Start! ✨</p>";
+  document.getElementById("message").textContent =
+    "Catch as many stars as possible!";
+}
+</script>
 </body>
 </html>
