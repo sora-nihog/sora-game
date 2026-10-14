@@ -2,368 +2,639 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sora's Galaxy ⭐</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>SoraCraft 3D 🌍</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
 body {
   margin: 0;
-  padding: 18px 12px;
-  text-align: center;
-  color: white;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(160deg,#05071c,#20104c,#071d3b);
-  overflow-x: hidden;
-}
-
-h1 {
-  color: #ffe66d;
-  text-shadow: 0 0 15px #ffc400;
-}
-
-input {
-  padding: 12px;
-  border-radius: 20px;
-  border: 2px solid #a68bff;
-  width: 65%;
-  max-width: 260px;
-  background: #101735;
-  color: white;
-  font-size: 16px;
-}
-
-button {
-  border: 0;
-  border-radius: 25px;
-  padding: 12px 20px;
-  margin: 6px;
-  background: #8d6bff;
-  color: white;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-#scoreboard {
-  line-height: 1.8;
-  font-size: 18px;
-  margin: 14px;
-}
-
-#game {
-  height: 420px;
-  max-width: 520px;
-  width: 100%;
-  margin: 15px auto;
-  position: relative;
   overflow: hidden;
-  border: 2px solid #a68bff;
-  border-radius: 20px;
-  background:
-    radial-gradient(ellipse at 25% 30%,#24336a 0%,transparent 40%),
-    radial-gradient(ellipse at 80% 70%,#35155c 0%,transparent 40%),
-    #050a20;
-  box-shadow: 0 0 25px #7149ff55;
-  touch-action: manipulation;
-}
-
-.sky-star {
-  position: absolute;
+  font-family: Arial, sans-serif;
+  background: #87ceeb;
   color: white;
-  opacity: .65;
-  pointer-events: none;
-  animation: twinkle 2s infinite alternate;
+  touch-action: none;
 }
 
-@keyframes twinkle {
-  from { opacity: .15; }
-  to { opacity: .9; }
+canvas {
+  display: block;
 }
 
-.item {
-  position: absolute;
-  font-size: 34px;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  animation: appear .18s ease-out;
-}
-
-@keyframes appear {
-  from { transform: scale(.2) rotate(-25deg); }
-  to { transform: scale(1) rotate(0); }
-}
-
-#message {
-  min-height: 26px;
-  color: #ffe66d;
-}
-
-#highScore {
-  color: #9fffd3;
-}
-
-#overlay {
-  position: absolute;
+#menu {
+  position: fixed;
   inset: 0;
+  z-index: 5;
+  background: linear-gradient(#16385acc, #07111dee);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 15px;
-  background: #050a2088;
+  text-align: center;
+  padding: 20px;
 }
 
-#overlay h2 { color: #ffe66d; }
+#menu h1 {
+  font-size: clamp(35px, 10vw, 65px);
+  margin: 5px;
+  color: #8aff60;
+  text-shadow: 3px 4px #17451a;
+}
 
-.small {
+#menu p {
+  color: #e4f5ff;
+}
+
+button {
+  border: 2px solid #ffffff66;
+  border-radius: 12px;
+  padding: 13px 18px;
+  margin: 6px;
+  color: white;
+  background: #253b59;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:active {
+  transform: scale(.95);
+}
+
+.mode {
+  width: min(290px, 85vw);
+  font-size: 19px;
+}
+
+.creative {
+  background: #269b36;
+}
+
+.survival {
+  background: #087de0;
+}
+
+#hud {
+  display: none;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+#top {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.panel {
+  background: #101c30c9;
+  border: 1px solid #ffffff44;
+  border-radius: 10px;
+  padding: 9px 12px;
   font-size: 13px;
-  color: #c9c9ef;
 }
 
+#controls {
+  position: absolute;
+  inset: 0;
+}
+
+#stickArea {
+  pointer-events: auto;
+  position: absolute;
+  left: 18px;
+  bottom: 65px;
+  width: 125px;
+  height: 125px;
+  border: 2px solid #ffffff88;
+  border-radius: 50%;
+  background: #15243b66;
+}
+
+#stick {
+  position: absolute;
+  left: 35px;
+  top: 35px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #e7efffbb;
+  border: 2px solid white;
+}
+
+.actionButtons {
+  pointer-events: auto;
+  position: absolute;
+  right: 12px;
+  bottom: 65px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.actionButtons button {
+  width: 78px;
+  height: 58px;
+  padding: 5px;
+  font-size: 13px;
+  background: #14243bcc;
+}
+
+#jump {
+  background: #248a42cc;
+}
+
+#break {
+  background: #c44b35dd;
+}
+
+#place {
+  background: #176fcddd;
+}
+
+#hotbar {
+  pointer-events: auto;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  padding: 5px;
+  border-radius: 10px;
+  background: #111827dd;
+  border: 2px solid #ffffff99;
+  max-width: 96vw;
+}
+
+.slot {
+  width: clamp(35px, 10vw, 47px);
+  height: 43px;
+  border: 2px solid #68758a;
+  border-radius: 5px;
+  background: #344357;
+  margin: 0;
+  padding: 2px;
+  font-size: 21px;
+}
+
+.slot.selected {
+  border: 3px solid #ffff8a;
+  background: #61745a;
+}
+
+#lookHint {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: #101c3088;
+  border-radius: 7px;
+  padding: 7px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 25px;
+  color: white;
+  text-shadow: 1px 1px 3px black;
+}
+
+#message {
+  position: absolute;
+  top: 125px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #101c30dd;
+  padding: 9px 13px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: none;
+  text-align: center;
+}
+
+#lookArea {
+  position: absolute;
+  top: 120px;
+  left: 36%;
+  right: 95px;
+  bottom: 185px;
+  pointer-events: auto;
+}
+
+@media (min-width: 800px) {
+  #stickArea {
+    width: 145px;
+    height: 145px;
+  }
+
+  #lookArea {
+    left: 45%;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<h1>🌌 Sora's Galaxy ⭐</h1>
-<p>Catch stars. Avoid bombs. Reach the next level!</p>
+<div id="menu">
+  <h1>🌍 SORACRAFT</h1>
+  <h2>Build Your World</h2>
+  <p>Explore • Build • Survive</p>
 
-<div id="nameArea">
-  <input id="playerName" maxlength="16"
-    placeholder="Enter your player name">
-  <button onclick="setName()">Save Name</button>
+  <button class="mode creative" onclick="startGame('creative')">
+    🟢 CREATIVE MODE
+  </button>
+
+  <button class="mode survival" onclick="startGame('survival')">
+    🔵 SURVIVAL MODE
+  </button>
+
+  <p>🎮 Mobile 3D Block Adventure</p>
+  <button onclick="showHelp()">📖 How to Play</button>
 </div>
 
-<div id="scoreboard">
-  <div>👤 Player: <span id="player">Guest</span></div>
-  <div>⭐ Score: <span id="score">0</span>
-    &nbsp; 🏆 Best: <span id="best">0</span></div>
-  <div>⏱️ Time: <span id="time">30</span>s
-    &nbsp; 🚀 Level: <span id="level">1</span></div>
-</div>
-
-<div id="game">
-  <div id="overlay">
-    <h2>⭐ Ready, Space Explorer?</h2>
-    <p>Tap ⭐ to score points.</p>
-    <p>💥 Bombs cost you points!</p>
-    <button onclick="startGame()">🚀 Start Game</button>
+<div id="hud">
+  <div id="top">
+    <div class="panel">
+      🌍 SoraCraft<br>
+      <span id="modeText">Creative</span>
+    </div>
+    <button style="pointer-events:auto"
+      onclick="backToMenu()">☰ Menu</button>
   </div>
+
+  <div id="lookHint">
+    Drag the right side to look around
+  </div>
+
+  <div id="crosshair">+</div>
+  <div id="message"></div>
+
+  <div id="controls">
+    <div id="stickArea">
+      <div id="stick"></div>
+    </div>
+
+    <div id="lookArea"></div>
+
+    <div class="actionButtons">
+      <button id="jump">⬆ JUMP</button>
+      <button id="break">⛏ BREAK</button>
+      <button id="place">🧱 PLACE</button>
+    </div>
+  </div>
+
+  <div id="hotbar"></div>
 </div>
 
-<button onclick="startGame()">🔄 Play Again</button>
-<button onclick="soundToggle()" id="soundButton">🔊 Sound ON</button>
-
-<p id="message">Your galaxy adventure awaits!</p>
-<p class="small">Stars +10 · Bombs −15 · Every 50 points = new level</p>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
-const game = document.getElementById("game");
-const $ = id => document.getElementById(id);
+let scene, camera, renderer, clock;
+let blocks = [];
+let worldGroup;
+let running = false;
+let mode = "creative";
 
-let score = 0;
-let best = Number(localStorage.getItem("soraBest") || 0);
-let time = 30;
-let level = 1;
-let playing = false;
-let soundOn = true;
-let spawnTimer;
-let clockTimer;
-let playerName = localStorage.getItem("soraPlayer") || "Guest";
-let audioContext;
+let yaw = 0;
+let pitch = 0;
+let velocityY = 0;
+let grounded = false;
+let selected = 0;
+let jumpPressed = false;
+let hp = 10;
 
-$("best").textContent = best;
-$("player").textContent = playerName;
-$("playerName").value = playerName === "Guest" ? "" : playerName;
+const blockTypes = [
+  { name: "Grass", color: 0x56ad3d, icon: "🟩" },
+  { name: "Dirt", color: 0x89512f, icon: "🟫" },
+  { name: "Stone", color: 0x888d98, icon: "⬜" },
+  { name: "Wood", color: 0x9a6736, icon: "🪵" },
+  { name: "Leaves", color: 0x237a32, icon: "🌿" },
+  { name: "Sand", color: 0xe7d39b, icon: "🟨" }
+];
 
-function setName() {
-  const value = $("playerName").value.trim();
-  playerName = value || "Guest";
-  localStorage.setItem("soraPlayer", playerName);
-  $("player").textContent = playerName;
-  $("message").textContent = "Welcome, " + playerName + "! 🌌";
+const keys = {};
+let joy = { x: 0, y: 0 };
+
+function showHelp() {
+  alert(
+    "SORACRAFT HOW TO PLAY\n\n" +
+    "• Choose Creative or Survival.\n" +
+    "• Use the left joystick to move.\n" +
+    "• Drag the right side to look around.\n" +
+    "• Press JUMP to jump.\n" +
+    "• Aim at a block and press BREAK.\n" +
+    "• Choose a block below and press PLACE.\n" +
+    "• Use the bottom bar to select blocks.\n\n" +
+    "This is an early game prototype!"
+  );
 }
 
-function sound(frequency, duration = .12, type = "sine") {
-  if (!soundOn) return;
+function startGame(selectedMode) {
+  mode = selectedMode;
 
-  try {
-    audioContext = audioContext || new (window.AudioContext ||
-      window.webkitAudioContext)();
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("hud").style.display = "block";
+  document.getElementById("modeText").textContent =
+    mode === "creative" ? "🟢 Creative" : "🔵 Survival";
 
-    if (audioContext.state === "suspended") audioContext.resume();
+  initWorld();
+  running = true;
+  clock.start();
+  animate();
+}
 
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
+function initWorld() {
+  if (renderer) {
+    renderer.dispose();
+    document.body.removeChild(renderer.domElement);
+  }
 
-    oscillator.type = type;
-    oscillator.frequency.value = frequency;
-    gain.gain.setValueAtTime(.12, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(
-      .001, audioContext.currentTime + duration
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87ceeb);
+  scene.fog = new THREE.Fog(0x87ceeb, 22, 65);
+
+  camera = new THREE.PerspectiveCamera(
+    75, window.innerWidth / window.innerHeight, 0.1, 150
+  );
+
+  camera.rotation.order = "YXZ";
+  camera.position.set(0, 3, 7);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  document.body.insertBefore(renderer.domElement, document.body.firstChild);
+
+  clock = new THREE.Clock();
+  worldGroup = new THREE.Group();
+  scene.add(worldGroup);
+  blocks = [];
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x53633b, 2));
+
+  const sun = new THREE.DirectionalLight(0xffffff, 2);
+  sun.position.set(10, 20, 10);
+  scene.add(sun);
+
+  const materialCache = {};
+
+  function addBlock(x, y, z, type) {
+    const key = type;
+
+    if (!materialCache[key]) {
+      materialCache[key] = new THREE.MeshLambertMaterial({
+        color: blockTypes[type].color
+      });
+    }
+
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      materialCache[key]
     );
 
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + duration);
-  } catch (e) {}
-}
+    mesh.position.set(x, y, z);
+    mesh.userData.type = type;
+    mesh.userData.block = true;
 
-function soundToggle() {
-  soundOn = !soundOn;
-  $("soundButton").textContent =
-    soundOn ? "🔊 Sound ON" : "🔇 Sound OFF";
-  if (soundOn) sound(600);
-}
-
-function makeSky() {
-  for (let i = 0; i < 48; i++) {
-    const dot = document.createElement("span");
-    dot.className = "sky-star";
-    dot.textContent = Math.random() > .5 ? "·" : "✦";
-    dot.style.left = Math.random() * 98 + "%";
-    dot.style.top = Math.random() * 98 + "%";
-    dot.style.fontSize = (8 + Math.random() * 12) + "px";
-    dot.style.animationDelay = Math.random() * 3 + "s";
-    game.appendChild(dot);
-  }
-}
-
-function updateLevel() {
-  level = Math.floor(score / 50) + 1;
-  $("level").textContent = level;
-}
-
-function spawnItem() {
-  if (!playing) return;
-
-  const bomb = Math.random() < Math.min(.12 + level * .025, .32);
-  const item = document.createElement("button");
-
-  item.className = "item";
-  item.textContent = bomb ? "💥" : (Math.random() < .12 ? "🌟" : "⭐");
-  item.setAttribute("aria-label", bomb ? "Bomb" : "Star");
-
-  // Random position and random timing; no fixed pattern.
-  const maxX = Math.max(0, game.clientWidth - 48);
-  const maxY = Math.max(0, game.clientHeight - 48);
-
-  item.style.left = Math.random() * maxX + "px";
-  item.style.top = Math.random() * maxY + "px";
-  item.style.transform = "rotate(" + Math.random() * 60 + "deg)";
-
-  item.onclick = () => {
-    if (!playing || !item.isConnected) return;
-
-    if (bomb) {
-      score = Math.max(0, score - 15);
-      $("message").textContent = "BOOM! 💥 Watch out!";
-      sound(110, .25, "sawtooth");
-    } else {
-      const points = item.textContent === "🌟" ? 25 : 10;
-      score += points;
-      $("message").textContent = "+" + points + " points! ✨";
-      sound(item.textContent === "🌟" ? 1000 : 720);
-    }
-
-    item.remove();
-    $("score").textContent = score;
-
-    updateLevel();
-
-    if (score > best) {
-      best = score;
-      localStorage.setItem("soraBest", best);
-      $("best").textContent = best;
-    }
-  };
-
-  game.appendChild(item);
-
-  const lifetime = Math.max(550, 1500 - level * 80);
-  setTimeout(() => item.remove(), lifetime);
-}
-
-function clearItems() {
-  game.querySelectorAll(".item").forEach(item => item.remove());
-}
-
-function startGame() {
-  clearInterval(spawnTimer);
-  clearInterval(clockTimer);
-  playing = false;
-  clearItems();
-
-  score = 0;
-  time = 30;
-  level = 1;
-
-  $("score").textContent = score;
-  $("time").textContent = time;
-  $("level").textContent = level;
-  $("message").textContent = "Catch stars, dodge bombs! ⭐💥";
-
-  const overlay = $("overlay");
-  if (overlay) overlay.remove();
-
-  game.querySelectorAll(".sky-star").forEach(dot => dot.remove());
-  makeSky();
-
-  playing = true;
-  spawnItem();
-
-  function scheduleNext() {
-    if (!playing) return;
-    const delay = Math.max(230, 700 - level * 35) +
-      Math.random() * 550;
-
-    spawnTimer = setTimeout(() => {
-      spawnItem();
-      scheduleNext();
-    }, delay);
+    worldGroup.add(mesh);
+    blocks.push(mesh);
+    return mesh;
   }
 
-  scheduleNext();
+  // Generate a blocky landscape.
+  for (let x = -12; x <= 12; x++) {
+    for (let z = -12; z <= 12; z++) {
+      const height =
+        Math.floor(
+          1 +
+          Math.sin(x * 0.45) * 1.3 +
+          Math.cos(z * 0.35) * 1.2
+        );
 
-  clockTimer = setInterval(() => {
-    time--;
-    $("time").textContent = time;
+      for (let y = -2; y <= height; y++) {
+        let type = y === height ? 0 : (y >= height - 2 ? 1 : 2);
+        addBlock(x, y, z, type);
+      }
 
-    if (time <= 0) endGame();
-  }, 1000);
+      // Leave a small starting clearing.
+      if (
+        Math.random() < 0.045 &&
+        Math.abs(x) > 3 &&
+        Math.abs(z) > 3
+      ) {
+        const treeHeight = 3 + Math.floor(Math.random() * 2);
+
+        for (let y = 1; y <= treeHeight; y++) {
+          addBlock(x, height + y, z, 3);
+        }
+
+        for (let lx = -2; lx <= 2; lx++) {
+          for (let lz = -2; lz <= 2; lz++) {
+            for (let ly = treeHeight - 1; ly <= treeHeight + 1; ly++) {
+              if (
+                Math.abs(lx) + Math.abs(lz) < 4 &&
+                Math.random() > 0.12
+              ) {
+                addBlock(x + lx, height + ly, z + lz, 4);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // A simple sun.
+  const sunMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(2, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xfff0a0 })
+  );
+
+  sunMesh.position.set(-18, 22, -30);
+  scene.add(sunMesh);
+
+  yaw = 0;
+  pitch = 0;
+  velocityY = 0;
+  hp = 10;
+
+  camera.position.set(0, 4, 7);
+  camera.rotation.set(0, 0, 0);
+
+  buildHotbar();
 }
 
-function endGame() {
-  playing = false;
-  clearInterval(clockTimer);
-  clearTimeout(spawnTimer);
-  clearItems();
+function buildHotbar() {
+  const bar = document.getElementById("hotbar");
+  bar.innerHTML = "";
 
-  sound(420, .25);
-  setTimeout(() => sound(320, .3), 250);
+  blockTypes.forEach((b, i) => {
+    const btn = document.createElement("button");
+    btn.className = "slot" + (i === selected ? " selected" : "");
+    btn.textContent = b.icon;
+    btn.title = b.name;
 
-  const overlay = document.createElement("div");
-  overlay.id = "overlay";
-  overlay.innerHTML =
-    "<h2>🌟 Game Over!</h2>" +
-    "<p>" + playerName + ", you scored " + score + " points!</p>" +
-    "<p>🏆 Best score: " + best + "</p>" +
-    "<button onclick='startGame()'>Play Again 🚀</button>";
+    btn.onclick = () => {
+      selected = i;
+      buildHotbar();
+    };
 
-  game.appendChild(overlay);
-  $("message").textContent = "Great adventure! 💜";
+    bar.appendChild(btn);
+  });
 }
 
-makeSky();
-</script>
+function showMessage(text) {
+  const el = document.getElementById("message");
+  el.textContent = text;
+  el.style.display = "block";
 
-</body>
-</html>
+  clearTimeout(showMessage.timer);
+  showMessage.timer = setTimeout(() => {
+    el.style.display = "none";
+  }, 1600);
+}
+
+function getTarget() {
+  const ray = new THREE.Raycaster();
+  ray.setFromCamera(new THREE.Vector2(0, 0), camera);
+
+  const hits = ray.intersectObjects(blocks, false);
+  return hits.length && hits[0].distance < 6 ? hits[0] : null;
+}
+
+function breakBlock() {
+  const hit = getTarget();
+
+  if (!hit) {
+    showMessage("Aim at a nearby block!");
+    return;
+  }
+
+  const block = hit.object;
+
+  if (mode === "survival" && block.position.y < -1) {
+    showMessage("Dig the surface first!");
+    return;
+  }
+
+  worldGroup.remove(block);
+  blocks = blocks.filter(b => b !== block);
+}
+
+function placeBlock() {
+  const hit = getTarget();
+
+  if (!hit) {
+    showMessage("Aim at a block to build!");
+    return;
+  }
+
+  const normal = hit.face.normal.clone();
+  normal.transformDirection(hit.object.matrixWorld);
+
+  const p = hit.object.position.clone().add(normal);
+
+  // Don't place a block inside the player.
+  if (p.distanceTo(camera.position) < 1.5) {
+    showMessage("Too close to place!");
+    return;
+  }
+
+  // Limit duplicate blocks.
+  if (blocks.some(b =>
+    Math.abs(b.position.x - p.x) < 0.1 &&
+    Math.abs(b.position.y - p.y) < 0.1 &&
+    Math.abs(b.position.z - p.z) < 0.1
+  )) {
+    return;
+  }
+
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshLambertMaterial({
+      color: blockTypes[selected].color
+    })
+  );
+
+  mesh.position.copy(p);
+  mesh.userData.type = selected;
+  mesh.userData.block = true;
+  worldGroup.add(mesh);
+  blocks.push(mesh);
+}
+
+function animate() {
+  if (!running) return;
+
+  requestAnimationFrame(animate);
+
+  const dt = Math.min(clock.getDelta(), 0.05);
+
+  // Movement relative to where the player is looking.
+  const forward = new THREE.Vector3(
+    -Math.sin(yaw), 0, -Math.cos(yaw)
+  );
+
+  const right = new THREE.Vector3(
+    Math.cos(yaw), 0, -Math.sin(yaw)
+  );
+
+  const move = new THREE.Vector3();
+
+  move.addScaledVector(forward, -joy.y);
+  move.addScaledVector(right, joy.x);
+
+  if (keys["w"] || keys["arrowup"]) move.add(forward);
+  if (keys["s"] || keys["arrowdown"]) move.sub(forward);
+  if (keys["d"] || keys["arrowright"]) move.add(right);
+  if (keys["a"] || keys["arrowleft"]) move.sub(right);
+
+  if (move.length() > 0) {
+    move.normalize();
+    camera.position.addScaledVector(move, dt * 5);
+  }
+
+  // Basic jump and gravity.
+  const below = blocks.filter(b =>
+    Math.abs(b.position.x - camera.position.x) < 0.5 &&
+    Math.abs(b.position.z - camera.position.z) < 0.5 &&
+    b.position.y + 0.5 <= camera.position.y - 1.5 &&
+    b.position.y + 0.5 >= camera.position.y - 2.2
+  );
+
+  grounded = below.length > 0;
+
+  if (grounded && velocityY < 0) {
+    velocityY = 0;
+    camera.position.y = Math.max(
+      camera.position.y,
+      below[0].position.y + 2
+    );
+  } else {
+    velocityY -= 16 * dt;
+    camera.position.y += velocityY * dt;
+  }
+
+  if (camera.position.y < -8) {
+    camera.position.set(
